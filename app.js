@@ -19,7 +19,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (oauthBtn) oauthBtn.addEventListener('click', handleLogin);
 
     // ---- Elements ----
-    const tasks = document.querySelectorAll('.task-card');
     const lists = document.querySelectorAll('.task-list');
     
     const newTaskBtn = document.getElementById('newTaskBtn');
@@ -28,15 +27,27 @@ document.addEventListener('DOMContentLoaded', () => {
     const cancelBtn = document.getElementById('cancelBtn');
     const newTaskForm = document.getElementById('newTaskForm');
     
-    const todoList = document.getElementById('todo-list');
-    
     let draggedTask = null;
 
+    const defaultTasks = [
+        { id: 'task-1', status: 'todo', title: 'Design Platform Architecture', desc: 'Draft the initial wireframes and system architecture.', category: 'design', assignees: ['Alex M'] },
+        { id: 'task-2', status: 'todo', title: 'Setup Authentication', desc: 'Implement secure OAuth2 login.', category: 'dev', assignees: ['Sam K', 'Jane'] },
+        { id: 'task-3', status: 'inprogress', title: 'Build Kanban Interface', desc: 'Develop drag and drop functionality.', category: 'dev', assignees: ['John D'] },
+        { id: 'task-4', status: 'review', title: 'Draft Release Notes', desc: 'Write documentation.', category: 'marketing', assignees: ['Sarah W'] },
+        { id: 'task-5', status: 'done', title: 'Create Brand Guidelines', desc: 'Establish color palette.', category: 'design', assignees: ['Alex M'] }
+    ];
+
+    let appTasks = JSON.parse(localStorage.getItem('syncspace_tasks'));
+    if (!appTasks || appTasks.length === 0) {
+        appTasks = defaultTasks;
+        localStorage.setItem('syncspace_tasks', JSON.stringify(appTasks));
+    }
+
+    function saveTasks() {
+        localStorage.setItem('syncspace_tasks', JSON.stringify(appTasks));
+    }
+
     // ---- Drag and Drop Functionality ----
-    
-    tasks.forEach(task => {
-        setupTaskEvents(task);
-    });
 
     lists.forEach(list => {
         list.addEventListener('dragover', e => {
@@ -54,20 +65,28 @@ document.addEventListener('DOMContentLoaded', () => {
             
             if (draggedTask) {
                 list.appendChild(draggedTask);
-                updateTaskCounts();
                 
+                const taskId = draggedTask.id;
+                const newStatus = list.id.replace('-list', '');
+                const taskIndex = appTasks.findIndex(t => t.id === taskId);
+                if (taskIndex > -1) {
+                    appTasks[taskIndex].status = newStatus;
+                    saveTasks();
+                }
+
                 // If dropped in Done, add visual styling
                 if (list.id === 'done-list') {
                     draggedTask.classList.add('done');
                     // Add check icon if not exists
                     const meta = draggedTask.querySelector('.task-meta');
-                    if (!meta.innerHTML.includes('fa-check-circle')) {
+                    if (meta && !meta.innerHTML.includes('fa-check-circle')) {
                          meta.innerHTML = '<i class="fa-solid fa-check-circle" style="color: var(--success-color)"></i>';
                     }
                 } else {
                     draggedTask.classList.remove('done');
-                    // We'd ideally restore original meta, but for demo simplicity we just remove line-through
                 }
+                
+                updateTaskCounts();
             }
         });
     });
@@ -281,8 +300,69 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // ---- Render Tasks (CRUD) ----
+    function renderTasks() {
+        document.querySelectorAll('.task-list').forEach(list => list.innerHTML = '');
+
+        appTasks.forEach(task => {
+            let labelClass = 'label-design';
+            let labelText = 'Design';
+            if (task.category === 'dev') { labelClass = 'label-dev'; labelText = 'Development'; }
+            else if (task.category === 'marketing') { labelClass = 'label-marketing'; labelText = 'Marketing'; }
+
+            const assigneesHTML = task.assignees.map(name => `<img src="https://ui-avatars.com/api/?name=${name.replace(' ','+')}&background=random" alt="${name}" class="avatar-small">`).join('');
+
+            const taskHTML = `
+                <button class="delete-task-btn" data-id="${task.id}" style="position:absolute; top: 8px; right: 8px; background: none; border: none; color: var(--text-muted); cursor: pointer; padding: 4px; border-radius: 4px; z-index: 2;"><i class="fa-solid fa-trash" style="pointer-events: none;"></i></button>
+                <div class="task-labels">
+                    <span class="label ${labelClass}">${labelText}</span>
+                </div>
+                <h4 class="task-title">${task.title}</h4>
+                <p class="task-desc">${task.desc || 'No description provided.'}</p>
+                <div class="task-footer">
+                    <div class="task-assignees">
+                        ${assigneesHTML || '<img src="https://ui-avatars.com/api/?name=User&background=random" alt="Unassigned" class="avatar-small">'}
+                    </div>
+                    <div class="task-meta">
+                        ${task.status === 'done' ? '<i class="fa-solid fa-check-circle" style="color: var(--success-color)"></i>' : '<i class="fa-regular fa-comment"></i> 0'}
+                    </div>
+                </div>
+            `;
+            
+            const newTask = document.createElement('div');
+            newTask.className = 'task-card' + (task.status === 'done' ? ' done' : '');
+            newTask.draggable = true;
+            newTask.id = task.id;
+            newTask.tabIndex = 0;
+            newTask.style.position = 'relative';
+            newTask.innerHTML = taskHTML;
+            
+            setupTaskEvents(newTask);
+            
+            const listEl = document.getElementById(task.status + '-list');
+            if (listEl) listEl.appendChild(newTask);
+        });
+
+        updateTaskCounts();
+        if (typeof applyFilter === 'function') applyFilter();
+    }
+
+    // Event delegation for deleting tasks
+    const kanbanBoard = document.querySelector('.kanban-board');
+    if (kanbanBoard) {
+        kanbanBoard.addEventListener('click', (e) => {
+            if (e.target.closest('.delete-task-btn')) {
+                e.stopPropagation(); // prevent opening the modal
+                const btn = e.target.closest('.delete-task-btn');
+                const taskId = btn.getAttribute('data-id');
+                appTasks = appTasks.filter(t => t.id !== taskId);
+                saveTasks();
+                renderTasks();
+            }
+        });
+    }
+
     // ---- Create New Task ----
-    
     newTaskForm.addEventListener('submit', (e) => {
         e.preventDefault();
         
@@ -290,41 +370,18 @@ document.addEventListener('DOMContentLoaded', () => {
         const desc = document.getElementById('taskDescInput').value;
         const category = document.getElementById('taskCategoryInput').value;
         
-        let labelClass = 'label-design';
-        let labelText = 'Design';
+        const newTaskObj = {
+            id: 'task-' + Date.now(),
+            status: 'todo',
+            title: title,
+            desc: desc,
+            category: category,
+            assignees: ['Jane'] // Default to Jane for demo
+        };
         
-        if (category === 'dev') { labelClass = 'label-dev'; labelText = 'Development'; }
-        else if (category === 'marketing') { labelClass = 'label-marketing'; labelText = 'Marketing'; }
-
-        const taskId = 'task-' + Date.now();
-        
-        const taskHTML = `
-            <div class="task-labels">
-                <span class="label ${labelClass}">${labelText}</span>
-            </div>
-            <h4 class="task-title">${title}</h4>
-            <p class="task-desc">${desc || 'No description provided.'}</p>
-            <div class="task-footer">
-                <div class="task-assignees">
-                    <img src="https://ui-avatars.com/api/?name=User&background=random" alt="Unassigned" class="avatar-small">
-                </div>
-                <div class="task-meta">
-                    <i class="fa-regular fa-comment"></i> 0
-                </div>
-            </div>
-        `;
-        
-        const newTask = document.createElement('div');
-        newTask.className = 'task-card';
-        newTask.draggable = true;
-        newTask.id = taskId;
-        newTask.tabIndex = 0;
-        newTask.innerHTML = taskHTML;
-        
-        setupTaskEvents(newTask);
-        todoList.appendChild(newTask);
-        
-        updateTaskCounts();
+        appTasks.push(newTaskObj);
+        saveTasks();
+        renderTasks();
         closeModal();
     });
 
@@ -376,35 +433,38 @@ document.addEventListener('DOMContentLoaded', () => {
     // Handle filter buttons visual states and filtering logic
     const filterAllBtn = document.getElementById('filter-all');
     const filterMyBtn = document.getElementById('filter-my');
+    let currentFilter = 'all';
+
+    function applyFilter() {
+        document.querySelectorAll('.task-card').forEach(task => {
+            if (currentFilter === 'all') {
+                task.style.display = 'block';
+            } else if (currentFilter === 'my') {
+                const isMine = !!task.querySelector('img[alt="Jane"]');
+                task.style.display = isMine ? 'block' : 'none';
+            }
+        });
+        updateTaskCounts();
+    }
     
     if (filterAllBtn && filterMyBtn) {
         filterAllBtn.addEventListener('click', () => {
             filterAllBtn.classList.add('active');
             filterMyBtn.classList.remove('active');
-            
-            // Show all tasks
-            document.querySelectorAll('.task-card').forEach(task => {
-                task.style.display = 'block';
-            });
-            updateTaskCounts();
+            currentFilter = 'all';
+            applyFilter();
         });
 
         filterMyBtn.addEventListener('click', () => {
             filterMyBtn.classList.add('active');
             filterAllBtn.classList.remove('active');
-            
-            // Hide tasks not assigned to "Jane"
-            document.querySelectorAll('.task-card').forEach(task => {
-                const isMine = !!task.querySelector('img[alt="Jane"]');
-                if (isMine) {
-                    task.style.display = 'block';
-                } else {
-                    task.style.display = 'none';
-                }
-            });
-            updateTaskCounts();
+            currentFilter = 'my';
+            applyFilter();
         });
     }
+
+    // Initial render call to bootstrap the app tasks
+    renderTasks();
 
     // ---- View Navigation ----
     const navItems = document.querySelectorAll('.nav-item');
