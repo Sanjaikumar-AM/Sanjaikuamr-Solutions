@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SyncSpace - Team Collaboration Platform</title>
+    <meta name="description" content="A platform that improves team coordination, simplifies workflows, and improves task visibility.">
+    <link rel="stylesheet" href="index.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Authentication Overlay -->
+    <div class="auth-overlay" id="authOverlay">
+        <div class="auth-container">
+            <div class="logo-icon">
+                <i class="fa-solid fa-layer-group"></i>
+            </div>
+            <h2>Welcome to SyncSpace</h2>
+            <p>Log in to access your team collaboration dashboard.</p>
+            
+            <form class="auth-form" id="loginForm">
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" placeholder="jane@example.com" required value="jane.doe@company.com">
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" placeholder="••••••••" required value="password123">
+                </div>
+                <button type="submit" class="primary-btn">Sign In</button>
+            </form>
+            
+            <div class="auth-divider"><span>OR</span></div>
+            
+            <button class="oauth-btn" type="button" id="oauthBtn">
+                <i class="fa-brands fa-google"></i>
+                Sign in with Google
+            </button>
+        </div>
+    </div>
+
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar" aria-label="Main Navigation">
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fa-solid fa-layer-group"></i>
+                </div>
+                <h1>SyncSpace</h1>
+            </div>
+            
+            <ul class="nav-links">
+                <li>
+                    <a href="#" class="active nav-item" aria-current="page" data-view="dashboard">
+                        <i class="fa-solid fa-chart-pie"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="nav-item" data-view="workflows">
+                        <i class="fa-solid fa-kanban"></i>
+                        <span>Workflows</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="nav-item" data-view="communication">
+                        <i class="fa-solid fa-comments"></i>
+                        <span>Communication</span>
+                        <span class="badge">3</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="nav-item" data-view="team">
+                        <i class="fa-solid fa-users"></i>
+                        <span>Team</span>
+                    </a>
+                </li>
+            </ul>
+
+            <div class="sidebar-bottom">
+                <a href="#" class="settings-link nav-item" data-view="settings">
+                    <i class="fa-solid fa-gear"></i>
+                    <span>Settings</span>
+                </a>
+                <div class="user-profile">
+                    <img src="https://ui-avatars.com/api/?name=Jane+Doe&background=random" alt="Jane Doe Profile" class="avatar">
+                    <div class="user-info">
+                        <span class="user-name">Jane Doe</span>
+                        <span class="user-role">Product Manager</span>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="top-header">
+                <div class="header-search">
+                    <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                    <input type="text" placeholder="Search tasks, workflows, or team members..." aria-label="Search">
+                </div>
+                
+                <div class="header-actions">
+                    <button class="icon-btn" aria-label="Notifications">
+                        <i class="fa-regular fa-bell"></i>
+                        <span class="notification-dot"></span>
+                    </button>
+                    <button class="primary-btn" id="newTaskBtn" aria-haspopup="dialog">
+                        <i class="fa-solid fa-plus"></i>
+                        New Task
+                    </button>
+                </div>
+            </header>
+
+            <!-- Dashboard Content -->
+            <div class="dashboard-content view-section active" id="view-dashboard">
+                <div class="page-header">
+                    <h2>Project Overview</h2>
+                    <div class="filters">
+                        <button class="filter-btn active" id="filter-all">All Tasks</button>
+                        <button class="filter-btn" id="filter-my">My Tasks</button>
+                    </div>
+                </div>
+
+                <!-- Kanban Board -->
+                <div class="kanban-board">
+                    <!-- Column 1: To Do -->
+                    <div class="kanban-column" id="todo-column" data-status="todo">
+                        <div class="column-header">
+                            <h3>To Do</h3>
+                            <span class="task-count">3</span>
+                        </div>
+                        <div class="task-list" id="todo-list" aria-label="To Do Tasks">
+                            <!-- Task Card -->
+                            <div class="task-card" draggable="true" id="task-1" tabindex="0">
+                                <div class="task-labels">
+                                    <span class="label label-design">Design</span>
+                                </div>
+                                <h4 class="task-title">Design Platform Architecture</h4>
+                                <p class="task-desc">Draft the initial wireframes and system architecture for the collaboration tool.</p>
+                                <div class="task-footer">
+                                    <div class="task-assignees">
+                                        <img src="https://ui-avatars.com/api/?name=Alex+M&background=random" alt="Alex" class="avatar-small">
+                                    </div>
+                                    <div class="task-meta">
+                                        <i class="fa-regular fa-comment"></i> 2
+                                        <i class="fa-solid fa-paperclip"></i> 1
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="task-card" draggable="true" id="task-2" tabindex="0">
+                                <div class="task-labels">
+                                    <span class="label label-dev">Development</span>
+                                    <span class="label label-high">High Priority</span>
+                                </div>
+                                <h4 class="task-title">Setup Authentication</h4>
+                                <p class="task-desc">Implement secure OAuth2 login and role-based access control.</p>
+                                <div class="task-footer">
+                                    <div class="task-assignees">
+                                        <img src="https://ui-avatars.com/api/?name=Sam+K&background=random" alt="Sam" class="avatar-small">
+                                        <img src="https://ui-avatars.com/api/?name=Jane+D&background=random" alt="Jane" class="avatar-small">
+                                    </div>
+                                    <div class="task-meta">
+                                        <i class="fa-regular fa-comment"></i> 5
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Column 2: In Progress -->
+                    <div class="kanban-column" id="inprogress-column" data-status="inprogress">
+                        <div class="column-header">
+                            <h3>In Progress</h3>
+                            <span class="task-count">2</span>
+                        </div>
+                        <div class="task-list" id="inprogress-list" aria-label="In Progress Tasks">
+                            <div class="task-card" draggable="true" id="task-3" tabindex="0">
+                                <div class="task-labels">
+                                    <span class="label label-dev">Development</span>
+                                </div>
+                                <h4 class="task-title">Build Kanban Interface</h4>
+                                <p class="task-desc">Develop drag and drop functionality for task management.</p>
+                                <div class="task-footer">
+                                    <div class="task-assignees">
+                                        <img src="https://ui-avatars.com/api/?name=John+D&background=random" alt="John" class="avatar-small">
+                                    </div>
+                                    <div class="task-meta">
+                                        <i class="fa-regular fa-comment"></i> 1
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Column 3: Review -->
+                    <div class="kanban-column" id="review-column" data-status="review">
+                        <div class="column-header">
+                            <h3>Review</h3>
+                            <span class="task-count">1</span>
+                        </div>
+                        <div class="task-list" id="review-list" aria-label="Review Tasks">
+                            <div class="task-card" draggable="true" id="task-4" tabindex="0">
+                                <div class="task-labels">
+                                    <span class="label label-marketing">Marketing</span>
+                                </div>
+                                <h4 class="task-title">Draft Release Notes</h4>
+                                <p class="task-desc">Write documentation and release notes for v1.0 beta.</p>
+                                <div class="task-footer">
+                                    <div class="task-assignees">
+                                        <img src="https://ui-avatars.com/api/?name=Sarah+W&background=random" alt="Sarah" class="avatar-small">
+                                    </div>
+                                    <div class="task-meta">
+                                        <i class="fa-regular fa-comment"></i> 0
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Column 4: Done -->
+                    <div class="kanban-column" id="done-column" data-status="done">
+                        <div class="column-header">
+                            <h3>Done</h3>
+                            <span class="task-count">1</span>
+                        </div>
+                        <div class="task-list" id="done-list" aria-label="Completed Tasks">
+                            <div class="task-card done" draggable="true" id="task-5" tabindex="0">
+                                <div class="task-labels">
+                                    <span class="label label-design">Design</span>
+                                </div>
+                                <h4 class="task-title">Create Brand Guidelines</h4>
+                                <p class="task-desc">Establish color palette, typography, and logo usage.</p>
+                                <div class="task-footer">
+                                    <div class="task-assignees">
+                                        <img src="https://ui-avatars.com/api/?name=Alex+M&background=random" alt="Alex" class="avatar-small">
+                                    </div>
+                                    <div class="task-meta">
+                                        <i class="fa-solid fa-check-circle" style="color: var(--success-color)"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Workflows View -->
+            <div class="view-section" id="view-workflows" style="display: none; padding: 2rem; overflow-y: auto;">
+                <div class="page-header">
+                    <h2>Workflows</h2>
+                    <button class="primary-btn"><i class="fa-solid fa-plus"></i> New Workflow</button>
+                </div>
+                <div class="workflows-list">
+                    <div class="workflow-card">
+                        <div class="workflow-icon"><i class="fa-solid fa-code-branch"></i></div>
+                        <div class="workflow-info">
+                            <h3>Code Deployment</h3>
+                            <p>Automated pipeline for staging and production</p>
+                        </div>
+                        <div class="workflow-status active">Active</div>
+                    </div>
+                    <div class="workflow-card">
+                        <div class="workflow-icon"><i class="fa-solid fa-pen-nib"></i></div>
+                        <div class="workflow-info">
+                            <h3>Design Review</h3>
+                            <p>Multi-step approval process for new designs</p>
+                        </div>
+                        <div class="workflow-status inactive">Paused</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Communication View -->
+            <div class="view-section" id="view-communication" style="display: none; padding: 2rem; height: 100%; display: flex; flex-direction: column;">
+                <div class="page-header">
+                    <h2>Communication</h2>
+                </div>
+                <div class="chat-container">
+                    <div class="chat-sidebar">
+                        <div class="chat-channel active"># general</div>
+                        <div class="chat-channel"># design</div>
+                        <div class="chat-channel"># development</div>
+                        <div class="chat-channel unread">Jane Doe <span class="badge">3</span></div>
+                    </div>
+                    <div class="chat-main">
+                        <div class="chat-messages">
+                            <div class="message">
+                                <img src="https://ui-avatars.com/api/?name=Alex+M&background=random" class="avatar-small">
+                                <div class="message-content">
+                                    <div class="message-header"><span class="message-author">Alex M</span> <span class="message-time">10:30 AM</span></div>
+                                    <p>Hey team, the new designs are ready for review!</p>
+                                </div>
+                            </div>
+                            <div class="message">
+                                <img src="https://ui-avatars.com/api/?name=Jane+Doe&background=random" class="avatar-small">
+                                <div class="message-content">
+                                    <div class="message-header"><span class="message-author">Jane Doe</span> <span class="message-time">10:35 AM</span></div>
+                                    <p>Awesome, I'll take a look right now.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="chat-input-area">
+                            <input type="text" placeholder="Type a message...">
+                            <button class="primary-btn"><i class="fa-solid fa-paper-plane"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Team View -->
+            <div class="view-section" id="view-team" style="display: none; padding: 2rem; overflow-y: auto;">
+                <div class="page-header">
+                    <h2>Team Directory</h2>
+                    <button class="primary-btn"><i class="fa-solid fa-user-plus"></i> Invite</button>
+                </div>
+                <div class="team-grid">
+                    <div class="team-card">
+                        <img src="https://ui-avatars.com/api/?name=Jane+Doe&background=random" class="avatar">
+                        <h3>Jane Doe</h3>
+                        <p>Product Manager</p>
+                        <div class="team-actions">
+                            <button class="icon-btn"><i class="fa-solid fa-envelope"></i></button>
+                            <button class="icon-btn"><i class="fa-solid fa-comment"></i></button>
+                        </div>
+                    </div>
+                    <div class="team-card">
+                        <img src="https://ui-avatars.com/api/?name=Alex+M&background=random" class="avatar">
+                        <h3>Alex M</h3>
+                        <p>Lead Designer</p>
+                        <div class="team-actions">
+                            <button class="icon-btn"><i class="fa-solid fa-envelope"></i></button>
+                            <button class="icon-btn"><i class="fa-solid fa-comment"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings View -->
+            <div class="view-section" id="view-settings" style="display: none; padding: 2rem; overflow-y: auto;">
+                <div class="page-header">
+                    <h2>Settings</h2>
+                </div>
+                <div class="settings-container">
+                    <div class="settings-group">
+                        <h3>Profile</h3>
+                        <div class="form-group">
+                            <label>Full Name</label>
+                            <input type="text" value="Jane Doe">
+                        </div>
+                        <div class="form-group">
+                            <label>Role</label>
+                            <input type="text" value="Product Manager">
+                        </div>
+                    </div>
+                    <div class="settings-group">
+                        <h3>Notifications</h3>
+                        <label class="toggle-switch">
+                            <input type="checkbox" checked>
+                            <span class="toggle-slider"></span>
+                            Email Notifications
+                        </label>
+                        <label class="toggle-switch">
+                            <input type="checkbox" checked>
+                            <span class="toggle-slider"></span>
+                            Push Notifications
+                        </label>
+                    </div>
+                    <button class="primary-btn">Save Changes</button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal for New Task (Accessibility focused) -->
+    <div class="modal-overlay" id="taskModal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Create New Task</h2>
+                <button class="close-btn" id="closeModalBtn" aria-label="Close modal">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <form id="newTaskForm">
+                <div class="form-group">
+                    <label for="taskTitleInput">Task Title <span class="required" aria-hidden="true">*</span></label>
+                    <input type="text" id="taskTitleInput" required placeholder="e.g. Implement user profile page" aria-required="true">
+                </div>
+                <div class="form-group">
+                    <label for="taskDescInput">Description</label>
+                    <textarea id="taskDescInput" rows="3" placeholder="Add details about this task..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="taskCategoryInput">Category</label>
+                    <select id="taskCategoryInput">
+                        <option value="design">Design</option>
+                        <option value="dev">Development</option>
+                        <option value="marketing">Marketing</option>
+                    </select>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="secondary-btn" id="cancelBtn">Cancel</button>
+                    <button type="submit" class="primary-btn">Create Task</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
