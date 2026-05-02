@@ -1,5 +1,5 @@
 /**
- * Application Logic for SyncSpace Team Collaboration Tool
+ * Application Logic for Sanjaikumar Solutions Team Collaboration Tool
  * Focuses on drag-and-drop mechanics, accessibility, and UI interactions
  */
 
@@ -51,14 +51,14 @@ document.addEventListener('DOMContentLoaded', () => {
         { id: 'task-5', status: 'done', title: 'Create Brand Guidelines', desc: 'Establish color palette.', category: 'design', assignees: ['Alex M'] }
     ];
 
-    let appTasks = JSON.parse(localStorage.getItem('syncspace_tasks'));
+    let appTasks = JSON.parse(localStorage.getItem('sanjaikumar_tasks'));
     if (!appTasks || appTasks.length === 0) {
         appTasks = defaultTasks;
-        localStorage.setItem('syncspace_tasks', JSON.stringify(appTasks));
+        localStorage.setItem('sanjaikumar_tasks', JSON.stringify(appTasks));
     }
 
     function saveTasks() {
-        localStorage.setItem('syncspace_tasks', JSON.stringify(appTasks));
+        localStorage.setItem('sanjaikumar_tasks', JSON.stringify(appTasks));
     }
 
     // ---- Drag and Drop Functionality ----
@@ -173,7 +173,7 @@ document.addEventListener('DOMContentLoaded', () => {
                <h3 style="margin-bottom: 1rem;">Authenticator Setup</h3>
                <p style="color: var(--text-secondary); margin-bottom: 2rem;">Scan the QR code below with your mobile authenticator app to enable Two-Factor Authentication.</p>
                <div style="background: white; padding: 1rem; display: inline-block; border-radius: 8px; margin-bottom: 1.5rem;">
-                  <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=syncspace-auth-12345" alt="QR Code" width="150" height="150">
+                  <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=sanjaikumar-auth-12345" alt="QR Code" width="150" height="150">
                </div>
                <br>
                <button class="primary-btn" style="margin: 0 auto;">Verify Code</button>
@@ -197,7 +197,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (taskId === 'task-4') {
             customContent = `
             <div style="background: var(--bg-tertiary); padding: 2rem; border-radius: 8px; font-family: monospace;">
-                <h1 style="color: var(--accent-primary); border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem; margin-bottom: 1rem;">SyncSpace v1.0.0 Release</h1>
+                <h1 style="color: var(--accent-primary); border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem; margin-bottom: 1rem;">Sanjaikumar Solutions v1.0.0 Release</h1>
                 <ul style="list-style-type: none; padding-left: 0; color: var(--text-primary); line-height: 2;">
                     <li><span style="color: var(--success-color);">[FEATURE]</span> Added Real-time Kanban Drag & Drop</li>
                     <li><span style="color: var(--success-color);">[FEATURE]</span> Integrated Multi-Channel Chat System</li>
