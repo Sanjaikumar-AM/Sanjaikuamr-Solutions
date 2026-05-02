@@ -695,4 +695,48 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // ---- Workflow Logic ----
+    const runWorkflowBtn = document.getElementById('runWorkflowBtn');
+    const flowPulse = document.getElementById('flow-pulse');
+    const testNode = document.getElementById('test-node');
+
+    if (runWorkflowBtn) {
+        runWorkflowBtn.addEventListener('click', () => {
+            if (flowPulse) {
+                runWorkflowBtn.disabled = true;
+                runWorkflowBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Running...';
+                
+                // Animate connector
+                flowPulse.style.width = '100%';
+                
+                setTimeout(() => {
+                    // Activate next node
+                    if (testNode) {
+                        testNode.style.opacity = '1';
+                        const icon = testNode.querySelector('div');
+                        icon.style.background = 'var(--accent-primary)';
+                        icon.style.border = 'none';
+                        icon.style.boxShadow = '0 0 20px rgba(99, 102, 241, 0.4)';
+                        icon.innerHTML = '<i class="fa-solid fa-vial" style="color: white;"></i>';
+                        testNode.querySelector('span').textContent = 'In Progress...';
+                        testNode.querySelector('span').style.color = 'var(--accent-primary)';
+                    }
+                    
+                    setTimeout(() => {
+                        if (testNode) {
+                            testNode.querySelector('span').textContent = 'Success';
+                            testNode.querySelector('span').style.color = 'var(--success-color)';
+                            testNode.querySelector('div').style.background = 'var(--success-color)';
+                            testNode.querySelector('div').style.boxShadow = '0 0 20px rgba(16, 185, 129, 0.4)';
+                        }
+                        runWorkflowBtn.disabled = false;
+                        runWorkflowBtn.innerHTML = '<i class="fa-solid fa-play"></i> Run All';
+                        alert('Workflow step "Test" completed successfully!');
+                    }, 2000);
+                    
+                }, 2000);
+            }
+        });
+    }
+
 });

@@ -182,25 +182,101 @@
             <!-- Workflows View -->
             <div class="view-section" id="view-workflows" style="display: none; padding: 2rem; overflow-y: auto;">
                 <div class="page-header">
-                    <h2>Workflows</h2>
-                    <button class="primary-btn"><i class="fa-solid fa-plus"></i> New Workflow</button>
-                </div>
-                <div class="workflows-list">
-                    <div class="workflow-card">
-                        <div class="workflow-icon"><i class="fa-solid fa-code-branch"></i></div>
-                        <div class="workflow-info">
-                            <h3>Code Deployment</h3>
-                            <p>Automated pipeline for staging and production</p>
-                        </div>
-                        <div class="workflow-status active">Active</div>
+                    <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                        <h2>Automated Workflows</h2>
+                        <p style="color: var(--text-secondary); font-size: 0.9rem;">Visualize and manage your team's automation pipelines.</p>
                     </div>
-                    <div class="workflow-card">
-                        <div class="workflow-icon"><i class="fa-solid fa-pen-nib"></i></div>
-                        <div class="workflow-info">
-                            <h3>Design Review</h3>
-                            <p>Multi-step approval process for new designs</p>
+                    <div style="display: flex; gap: 1rem;">
+                        <button class="secondary-btn" id="runWorkflowBtn"><i class="fa-solid fa-play"></i> Run All</button>
+                        <button class="primary-btn"><i class="fa-solid fa-plus"></i> Create Workflow</button>
+                    </div>
+                </div>
+
+                <div class="workflow-canvas" style="background: var(--bg-secondary); border-radius: var(--radius-lg); border: 1px solid var(--border-light); padding: 3rem; margin-top: 1rem; position: relative; overflow-x: auto; min-height: 400px; display: flex; align-items: center; justify-content: center;">
+                    <div class="flow-container" style="display: flex; align-items: center; gap: 4rem; position: relative;">
+                        <!-- Node 1 -->
+                        <div class="flow-node" style="display: flex; flex-direction: column; align-items: center; gap: 1rem; position: relative; z-index: 2;">
+                            <div style="width: 60px; height: 60px; background: var(--accent-primary); border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: white; box-shadow: 0 0 20px rgba(99, 102, 241, 0.4);">
+                                <i class="fa-solid fa-code-commit"></i>
+                            </div>
+                            <div style="text-align: center;">
+                                <h4 style="font-size: 0.9rem; color: var(--text-primary);">Commit</h4>
+                                <span style="font-size: 0.75rem; color: var(--success-color);">Completed</span>
+                            </div>
                         </div>
-                        <div class="workflow-status inactive">Paused</div>
+
+                        <!-- Connector -->
+                        <div style="width: 4rem; height: 2px; background: linear-gradient(to right, var(--accent-primary), var(--success-color)); position: relative;">
+                            <div style="position: absolute; right: -5px; top: -4px; border-left: 6px solid var(--success-color); border-top: 5px solid transparent; border-bottom: 5px solid transparent;"></div>
+                        </div>
+
+                        <!-- Node 2 -->
+                        <div class="flow-node" style="display: flex; flex-direction: column; align-items: center; gap: 1rem; position: relative; z-index: 2;">
+                            <div style="width: 60px; height: 60px; background: var(--success-color); border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: white; box-shadow: 0 0 20px rgba(16, 185, 129, 0.4);">
+                                <i class="fa-solid fa-box-open"></i>
+                            </div>
+                            <div style="text-align: center;">
+                                <h4 style="font-size: 0.9rem; color: var(--text-primary);">Build</h4>
+                                <span style="font-size: 0.75rem; color: var(--success-color);">Success</span>
+                            </div>
+                        </div>
+
+                        <!-- Connector (Active/Animated) -->
+                        <div style="width: 4rem; height: 2px; background: var(--border-color); position: relative;">
+                            <div id="flow-pulse" style="position: absolute; top: 0; left: 0; width: 0%; height: 100%; background: var(--accent-primary); transition: width 2s linear;"></div>
+                            <div style="position: absolute; right: -5px; top: -4px; border-left: 6px solid var(--border-color); border-top: 5px solid transparent; border-bottom: 5px solid transparent;"></div>
+                        </div>
+
+                        <!-- Node 3 -->
+                        <div class="flow-node" id="test-node" style="display: flex; flex-direction: column; align-items: center; gap: 1rem; position: relative; z-index: 2; opacity: 0.6;">
+                            <div style="width: 60px; height: 60px; background: var(--bg-tertiary); border: 2px dashed var(--border-color); border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: var(--text-muted);">
+                                <i class="fa-solid fa-vial"></i>
+                            </div>
+                            <div style="text-align: center;">
+                                <h4 style="font-size: 0.9rem; color: var(--text-primary);">Test</h4>
+                                <span style="font-size: 0.75rem; color: var(--text-muted);">Pending</span>
+                            </div>
+                        </div>
+
+                        <!-- Connector -->
+                        <div style="width: 4rem; height: 2px; background: var(--border-color); position: relative;">
+                            <div style="position: absolute; right: -5px; top: -4px; border-left: 6px solid var(--border-color); border-top: 5px solid transparent; border-bottom: 5px solid transparent;"></div>
+                        </div>
+
+                        <!-- Node 4 -->
+                        <div class="flow-node" style="display: flex; flex-direction: column; align-items: center; gap: 1rem; position: relative; z-index: 2; opacity: 0.6;">
+                            <div style="width: 60px; height: 60px; background: var(--bg-tertiary); border: 2px dashed var(--border-color); border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: var(--text-muted);">
+                                <i class="fa-solid fa-server"></i>
+                            </div>
+                            <div style="text-align: center;">
+                                <h4 style="font-size: 0.9rem; color: var(--text-primary);">Deploy</h4>
+                                <span style="font-size: 0.75rem; color: var(--text-muted);">Queued</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Background Grid -->
+                    <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-image: radial-gradient(var(--border-light) 1px, transparent 1px); background-size: 30px 30px; opacity: 0.2; z-index: 1;"></div>
+                </div>
+
+                <div style="margin-top: 2rem; display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                    <div style="background: var(--bg-secondary); padding: 1.5rem; border-radius: var(--radius-md); border: 1px solid var(--border-light);">
+                        <h3 style="font-size: 1rem; margin-bottom: 1rem;">Recent Activity</h3>
+                        <div style="display: flex; flex-direction: column; gap: 1rem;">
+                            <div style="display: flex; justify-content: space-between; font-size: 0.85rem;">
+                                <span style="color: var(--text-secondary);">Build #1204 success</span>
+                                <span style="color: var(--text-muted);">10m ago</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; font-size: 0.85rem;">
+                                <span style="color: var(--text-secondary);">Deployment to staging triggered</span>
+                                <span style="color: var(--text-muted);">1h ago</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="background: var(--bg-secondary); padding: 1.5rem; border-radius: var(--radius-md); border: 1px solid var(--border-light);">
+                        <h3 style="font-size: 1rem; margin-bottom: 1rem;">Success Rate</h3>
+                        <div style="font-size: 2rem; font-weight: 700; color: var(--success-color);">98.4%</div>
+                        <p style="color: var(--text-muted); font-size: 0.8rem;">Last 30 days of automation</p>
                     </div>
                 </div>
             </div>
