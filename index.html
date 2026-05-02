@@ -186,77 +186,70 @@
                         <h2>Automated Workflows</h2>
                         <p style="color: var(--text-secondary); font-size: 0.9rem;">Visualize and manage your team's automation pipelines.</p>
                     </div>
-                    <div style="display: flex; gap: 1rem;">
+                    <div style="display: flex; gap: 1rem; align-items: center;">
+                        <div class="style-toggle" style="background: var(--bg-tertiary); padding: 0.25rem; border-radius: var(--radius-md); display: flex; gap: 0.25rem; border: 1px solid var(--border-light);">
+                            <button id="styleStraight" style="padding: 0.5rem 1rem; border-radius: var(--radius-sm); border: none; background: transparent; color: var(--text-muted); cursor: pointer; font-size: 0.8rem; font-weight: 600; transition: all 0.3s;">Straight</button>
+                            <button id="styleWave" class="active" style="padding: 0.5rem 1rem; border-radius: var(--radius-sm); border: none; background: var(--accent-primary); color: white; cursor: pointer; font-size: 0.8rem; font-weight: 600; transition: all 0.3s;">Waveform</button>
+                        </div>
                         <button class="secondary-btn" id="runWorkflowBtn"><i class="fa-solid fa-play"></i> Run All</button>
                         <button class="primary-btn"><i class="fa-solid fa-plus"></i> Create Workflow</button>
                     </div>
                 </div>
 
-                <div class="workflow-canvas" style="background: var(--bg-secondary); border-radius: var(--radius-lg); border: 1px solid var(--border-light); padding: 3rem; margin-top: 1rem; position: relative; overflow-x: auto; min-height: 400px; display: flex; align-items: center; justify-content: center;">
-                    <div class="flow-container" style="display: flex; align-items: center; gap: 4rem; position: relative;">
+                <div class="workflow-canvas" style="background: var(--bg-secondary); border-radius: var(--radius-lg); border: 1px solid var(--border-light); padding: 5rem 3rem; margin-top: 1rem; position: relative; overflow: hidden; min-height: 450px; display: flex; align-items: center; justify-content: center;">
+                    <!-- Waveform SVG Connector -->
+                    <svg style="position: absolute; width: 100%; height: 100%; top: 0; left: 0; pointer-events: none; z-index: 1;">
+                        <path id="workflow-wave" d="M 150 225 Q 250 100, 350 225 T 550 225 T 750 225" 
+                              fill="none" stroke="var(--border-color)" stroke-width="3" stroke-dasharray="10 10" />
+                        <path id="workflow-pulse-wave" d="M 150 225 Q 250 100, 350 225 T 550 225 T 750 225" 
+                              fill="none" stroke="var(--accent-primary)" stroke-width="4" stroke-dasharray="1000" stroke-dashoffset="1000" 
+                              style="transition: stroke-dashoffset 4s ease-in-out;" />
+                    </svg>
+
+                    <div class="flow-container" style="display: flex; align-items: center; justify-content: space-around; width: 100%; position: relative; z-index: 2;">
                         <!-- Node 1 -->
-                        <div class="flow-node" style="display: flex; flex-direction: column; align-items: center; gap: 1rem; position: relative; z-index: 2;">
-                            <div style="width: 60px; height: 60px; background: var(--accent-primary); border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: white; box-shadow: 0 0 20px rgba(99, 102, 241, 0.4);">
+                        <div class="flow-node" style="display: flex; flex-direction: column; align-items: center; gap: 1rem; transform: translateY(0);">
+                            <div style="width: 60px; height: 60px; background: var(--accent-primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: white; box-shadow: 0 0 25px rgba(99, 102, 241, 0.5);">
                                 <i class="fa-solid fa-code-commit"></i>
                             </div>
                             <div style="text-align: center;">
                                 <h4 style="font-size: 0.9rem; color: var(--text-primary);">Commit</h4>
-                                <span style="font-size: 0.75rem; color: var(--success-color);">Completed</span>
                             </div>
                         </div>
 
-                        <!-- Connector -->
-                        <div style="width: 4rem; height: 2px; background: linear-gradient(to right, var(--accent-primary), var(--success-color)); position: relative;">
-                            <div style="position: absolute; right: -5px; top: -4px; border-left: 6px solid var(--success-color); border-top: 5px solid transparent; border-bottom: 5px solid transparent;"></div>
-                        </div>
-
-                        <!-- Node 2 -->
-                        <div class="flow-node" style="display: flex; flex-direction: column; align-items: center; gap: 1rem; position: relative; z-index: 2;">
-                            <div style="width: 60px; height: 60px; background: var(--success-color); border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: white; box-shadow: 0 0 20px rgba(16, 185, 129, 0.4);">
+                        <!-- Node 2 (Shifted Up for Wave) -->
+                        <div class="flow-node" style="display: flex; flex-direction: column; align-items: center; gap: 1rem; transform: translateY(-80px);">
+                            <div style="width: 60px; height: 60px; background: var(--success-color); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: white; box-shadow: 0 0 25px rgba(16, 185, 129, 0.5);">
                                 <i class="fa-solid fa-box-open"></i>
                             </div>
                             <div style="text-align: center;">
                                 <h4 style="font-size: 0.9rem; color: var(--text-primary);">Build</h4>
-                                <span style="font-size: 0.75rem; color: var(--success-color);">Success</span>
                             </div>
                         </div>
 
-                        <!-- Connector (Active/Animated) -->
-                        <div style="width: 4rem; height: 2px; background: var(--border-color); position: relative;">
-                            <div id="flow-pulse" style="position: absolute; top: 0; left: 0; width: 0%; height: 100%; background: var(--accent-primary); transition: width 2s linear;"></div>
-                            <div style="position: absolute; right: -5px; top: -4px; border-left: 6px solid var(--border-color); border-top: 5px solid transparent; border-bottom: 5px solid transparent;"></div>
-                        </div>
-
                         <!-- Node 3 -->
-                        <div class="flow-node" id="test-node" style="display: flex; flex-direction: column; align-items: center; gap: 1rem; position: relative; z-index: 2; opacity: 0.6;">
-                            <div style="width: 60px; height: 60px; background: var(--bg-tertiary); border: 2px dashed var(--border-color); border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: var(--text-muted);">
+                        <div class="flow-node" id="test-node" style="display: flex; flex-direction: column; align-items: center; gap: 1rem; transform: translateY(0);">
+                            <div style="width: 60px; height: 60px; background: var(--bg-tertiary); border: 2px dashed var(--border-color); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: var(--text-muted);">
                                 <i class="fa-solid fa-vial"></i>
                             </div>
                             <div style="text-align: center;">
                                 <h4 style="font-size: 0.9rem; color: var(--text-primary);">Test</h4>
-                                <span style="font-size: 0.75rem; color: var(--text-muted);">Pending</span>
                             </div>
                         </div>
 
-                        <!-- Connector -->
-                        <div style="width: 4rem; height: 2px; background: var(--border-color); position: relative;">
-                            <div style="position: absolute; right: -5px; top: -4px; border-left: 6px solid var(--border-color); border-top: 5px solid transparent; border-bottom: 5px solid transparent;"></div>
-                        </div>
-
                         <!-- Node 4 -->
-                        <div class="flow-node" style="display: flex; flex-direction: column; align-items: center; gap: 1rem; position: relative; z-index: 2; opacity: 0.6;">
-                            <div style="width: 60px; height: 60px; background: var(--bg-tertiary); border: 2px dashed var(--border-color); border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: var(--text-muted);">
+                        <div class="flow-node" style="display: flex; flex-direction: column; align-items: center; gap: 1rem; transform: translateY(0);">
+                            <div style="width: 60px; height: 60px; background: var(--bg-tertiary); border: 2px dashed var(--border-color); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: var(--text-muted);">
                                 <i class="fa-solid fa-server"></i>
                             </div>
                             <div style="text-align: center;">
                                 <h4 style="font-size: 0.9rem; color: var(--text-primary);">Deploy</h4>
-                                <span style="font-size: 0.75rem; color: var(--text-muted);">Queued</span>
                             </div>
                         </div>
                     </div>
 
                     <!-- Background Grid -->
-                    <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-image: radial-gradient(var(--border-light) 1px, transparent 1px); background-size: 30px 30px; opacity: 0.2; z-index: 1;"></div>
+                    <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-image: radial-gradient(var(--border-light) 1px, transparent 1px); background-size: 40px 40px; opacity: 0.15; z-index: 0;"></div>
                 </div>
 
                 <div style="margin-top: 2rem; display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">

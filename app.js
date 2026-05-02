@@ -697,45 +697,83 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // ---- Workflow Logic ----
     const runWorkflowBtn = document.getElementById('runWorkflowBtn');
-    const flowPulse = document.getElementById('flow-pulse');
     const testNode = document.getElementById('test-node');
+    const styleStraight = document.getElementById('styleStraight');
+    const styleWave = document.getElementById('styleWave');
+    const workflowWave = document.getElementById('workflow-wave');
+    const workflowPulseWave = document.getElementById('workflow-pulse-wave');
+    const flowNodes = document.querySelectorAll('.flow-node');
+
+    let currentStyle = 'wave';
+
+    if (styleStraight && styleWave) {
+        styleStraight.addEventListener('click', () => {
+            currentStyle = 'straight';
+            styleStraight.style.background = 'var(--accent-primary)';
+            styleStraight.style.color = 'white';
+            styleWave.style.background = 'transparent';
+            styleWave.style.color = 'var(--text-muted)';
+            
+            // Update SVG paths to straight line
+            if (workflowWave) workflowWave.setAttribute('d', 'M 150 225 L 750 225');
+            if (workflowPulseWave) workflowPulseWave.setAttribute('d', 'M 150 225 L 750 225');
+            
+            // Flatten nodes
+            flowNodes.forEach(node => node.style.transform = 'translateY(0)');
+        });
+
+        styleWave.addEventListener('click', () => {
+            currentStyle = 'wave';
+            styleWave.style.background = 'var(--accent-primary)';
+            styleWave.style.color = 'white';
+            styleStraight.style.background = 'transparent';
+            styleStraight.style.color = 'var(--text-muted)';
+            
+            // Update SVG paths to wave
+            if (workflowWave) workflowWave.setAttribute('d', 'M 150 225 Q 250 100, 350 225 T 550 225 T 750 225');
+            if (workflowPulseWave) workflowPulseWave.setAttribute('d', 'M 150 225 Q 250 100, 350 225 T 550 225 T 750 225');
+            
+            // Apply waveform transforms
+            if (flowNodes[1]) flowNodes[1].style.transform = 'translateY(-80px)';
+        });
+    }
 
     if (runWorkflowBtn) {
         runWorkflowBtn.addEventListener('click', () => {
-            if (flowPulse) {
-                runWorkflowBtn.disabled = true;
-                runWorkflowBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Running...';
-                
-                // Animate connector
-                flowPulse.style.width = '100%';
+            runWorkflowBtn.disabled = true;
+            runWorkflowBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Running...';
+            
+            // Reset and animate pulse wave
+            if (workflowPulseWave) {
+                workflowPulseWave.style.transition = 'none';
+                workflowPulseWave.style.strokeDashoffset = '1000';
+                workflowPulseWave.getBoundingClientRect(); // Trigger reflow
+                workflowPulseWave.style.transition = 'stroke-dashoffset 4s ease-in-out';
+                workflowPulseWave.style.strokeDashoffset = '0';
+            }
+            
+            setTimeout(() => {
+                if (testNode) {
+                    testNode.style.opacity = '1';
+                    const icon = testNode.querySelector('div');
+                    icon.style.background = 'var(--accent-primary)';
+                    icon.style.border = 'none';
+                    icon.style.boxShadow = '0 0 25px rgba(99, 102, 241, 0.5)';
+                    icon.innerHTML = '<i class="fa-solid fa-vial" style="color: white;"></i>';
+                }
                 
                 setTimeout(() => {
-                    // Activate next node
                     if (testNode) {
-                        testNode.style.opacity = '1';
                         const icon = testNode.querySelector('div');
-                        icon.style.background = 'var(--accent-primary)';
-                        icon.style.border = 'none';
-                        icon.style.boxShadow = '0 0 20px rgba(99, 102, 241, 0.4)';
-                        icon.innerHTML = '<i class="fa-solid fa-vial" style="color: white;"></i>';
-                        testNode.querySelector('span').textContent = 'In Progress...';
-                        testNode.querySelector('span').style.color = 'var(--accent-primary)';
+                        icon.style.background = 'var(--success-color)';
+                        icon.style.boxShadow = '0 0 25px rgba(16, 185, 129, 0.5)';
                     }
-                    
-                    setTimeout(() => {
-                        if (testNode) {
-                            testNode.querySelector('span').textContent = 'Success';
-                            testNode.querySelector('span').style.color = 'var(--success-color)';
-                            testNode.querySelector('div').style.background = 'var(--success-color)';
-                            testNode.querySelector('div').style.boxShadow = '0 0 20px rgba(16, 185, 129, 0.4)';
-                        }
-                        runWorkflowBtn.disabled = false;
-                        runWorkflowBtn.innerHTML = '<i class="fa-solid fa-play"></i> Run All';
-                        alert('Workflow step "Test" completed successfully!');
-                    }, 2000);
-                    
+                    runWorkflowBtn.disabled = false;
+                    runWorkflowBtn.innerHTML = '<i class="fa-solid fa-play"></i> Run All';
+                    alert('Workflow pipeline execution complete!');
                 }, 2000);
-            }
+                
+            }, 2000);
         });
     }
 
