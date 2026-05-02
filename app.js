@@ -559,6 +559,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const integrationBtns = document.querySelectorAll('.integration-card button');
     integrationBtns.forEach(btn => {
         btn.addEventListener('click', function() {
+            const url = this.getAttribute('data-url');
+            if (url) {
+                window.open(url, '_blank');
+            }
+
             if (!this.classList.contains('connected')) {
                 const originalText = this.textContent;
                 this.textContent = 'Connecting...';
