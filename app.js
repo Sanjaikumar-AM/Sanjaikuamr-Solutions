@@ -547,6 +547,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 } else {
                     targetView.style.display = 'block';
                 }
+                
+                if (item.getAttribute('data-view') === 'storage') {
+                    renderFiles();
+                }
             }
         });
     });
@@ -631,5 +635,64 @@ document.addEventListener('DOMContentLoaded', () => {
             alert('Action initiated with team member!');
         });
     });
+
+    // ---- Storage Logic ----
+    const fileList = document.getElementById('fileList');
+    const uploadFileBtn = document.getElementById('uploadFileBtn');
+    
+    let appFiles = [
+        { name: 'System_Architecture_v2.pdf', owner: 'Alex M.', size: '4.2 MB', modified: 'Oct 12, 2023', icon: 'fa-file-pdf', color: '#FF5722' },
+        { name: 'Dashboard_Mockups.fig', owner: 'Jane Doe', size: '128 MB', modified: 'Oct 15, 2023', icon: 'fa-file-code', color: '#9C27B0' },
+        { name: 'Q4_Strategy.docx', owner: 'Sam K.', size: '1.5 MB', modified: 'Oct 20, 2023', icon: 'fa-file-word', color: '#2196F3' },
+        { name: 'Team_Outing_Photo.jpg', owner: 'Alex M.', size: '8.4 MB', modified: 'Yesterday', icon: 'fa-file-image', color: '#4CAF50' }
+    ];
+
+    function renderFiles() {
+        if (!fileList) return;
+        fileList.innerHTML = '';
+        
+        appFiles.forEach(file => {
+            const tr = document.createElement('tr');
+            tr.style.borderBottom = '1px solid var(--border-light)';
+            tr.innerHTML = `
+                <td style="padding: 1rem; display: flex; align-items: center; gap: 0.75rem;">
+                    <i class="fa-solid ${file.icon}" style="color: ${file.color}; font-size: 1.1rem;"></i>
+                    <span style="font-weight: 500; color: var(--text-primary);">${file.name}</span>
+                </td>
+                <td style="padding: 1rem; color: var(--text-secondary); font-size: 0.9rem;">${file.owner}</td>
+                <td style="padding: 1rem; color: var(--text-secondary); font-size: 0.9rem;">${file.size}</td>
+                <td style="padding: 1rem; color: var(--text-secondary); font-size: 0.9rem;">${file.modified}</td>
+                <td style="padding: 1rem; text-align: right;">
+                    <button class="icon-btn" style="color: var(--text-muted);"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+                </td>
+            `;
+            fileList.appendChild(tr);
+        });
+    }
+
+    if (uploadFileBtn) {
+        uploadFileBtn.addEventListener('click', () => {
+            const originalText = uploadFileBtn.innerHTML;
+            uploadFileBtn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Uploading...';
+            uploadFileBtn.disabled = true;
+            
+            setTimeout(() => {
+                const newFile = {
+                    name: 'New_Project_Draft.pdf',
+                    owner: 'Jane Doe',
+                    size: '2.1 MB',
+                    modified: 'Just now',
+                    icon: 'fa-file-pdf',
+                    color: '#FF5722'
+                };
+                appFiles.unshift(newFile);
+                renderFiles();
+                
+                uploadFileBtn.innerHTML = originalText;
+                uploadFileBtn.disabled = false;
+                alert('File uploaded successfully!');
+            }, 2000);
+        });
+    }
 
 });
