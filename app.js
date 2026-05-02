@@ -498,5 +498,88 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
         });
+        });
     });
+
+    // ---- Communication & Integrations Logic ----
+    const integrationBtns = document.querySelectorAll('.integration-card button');
+    integrationBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            if (!this.classList.contains('connected')) {
+                const originalText = this.textContent;
+                this.textContent = 'Connecting...';
+                this.style.opacity = '0.7';
+                this.style.pointerEvents = 'none';
+                
+                // Simulate network request
+                setTimeout(() => {
+                    this.textContent = 'Connected';
+                    this.classList.add('connected');
+                    this.style.opacity = '1';
+                    this.style.pointerEvents = 'auto';
+                }, 1500);
+            } else {
+                if(confirm('Disconnect this integration?')) {
+                    this.classList.remove('connected');
+                    this.textContent = 'Connect';
+                }
+            }
+        });
+    });
+
+    // ---- Chat Logic ----
+    const chatInputArea = document.querySelector('.chat-input-area');
+    if (chatInputArea) {
+        const chatInput = chatInputArea.querySelector('input');
+        const sendBtn = chatInputArea.querySelector('button');
+        const chatMessages = document.querySelector('.chat-messages');
+
+        function sendMessage() {
+            const text = chatInput.value.trim();
+            if (text) {
+                const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                const msgHTML = `
+                    <div class="message">
+                        <img src="https://ui-avatars.com/api/?name=Jane+Doe&background=random" class="avatar-small">
+                        <div class="message-content">
+                            <div class="message-header"><span class="message-author">Jane Doe (You)</span> <span class="message-time">${time}</span></div>
+                            <p>${text}</p>
+                        </div>
+                    </div>
+                `;
+                chatMessages.insertAdjacentHTML('beforeend', msgHTML);
+                chatInput.value = '';
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+        }
+
+        sendBtn.addEventListener('click', sendMessage);
+        chatInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendMessage();
+        });
+    }
+
+    // ---- Settings Logic ----
+    const saveSettingsBtn = document.querySelector('#view-settings .primary-btn');
+    if (saveSettingsBtn) {
+        saveSettingsBtn.addEventListener('click', function() {
+            const originalText = this.textContent;
+            this.textContent = 'Saving...';
+            setTimeout(() => {
+                this.textContent = 'Saved Successfully!';
+                setTimeout(() => {
+                    this.textContent = originalText;
+                }, 2000);
+            }, 800);
+        });
+    }
+
+    // ---- Team Actions Logic ----
+    const teamActionBtns = document.querySelectorAll('.team-actions .icon-btn');
+    teamActionBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            alert('Action initiated with team member!');
+        });
+    });
+
 });
