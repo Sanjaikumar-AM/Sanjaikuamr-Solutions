@@ -290,6 +290,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 detailModal.setAttribute('aria-hidden', 'true');
                 document.body.style.overflow = '';
             }
+            const notificationModal = document.getElementById('notificationModal');
+            if (notificationModal && notificationModal.classList.contains('active')) {
+                notificationModal.classList.remove('active');
+                notificationModal.setAttribute('aria-hidden', 'true');
+                document.body.style.overflow = '';
+            }
         }
     });
 
@@ -310,6 +316,37 @@ document.addEventListener('DOMContentLoaded', () => {
                 taskDetailModal.classList.remove('active');
                 taskDetailModal.setAttribute('aria-hidden', 'true');
                 document.body.style.overflow = '';
+            }
+        });
+    }
+
+    // ---- Notification Logic ----
+    const notificationBtn = document.getElementById('notificationBtn');
+    const notificationModal = document.getElementById('notificationModal');
+    const closeNotificationBtn = document.getElementById('closeNotificationBtn');
+    const notificationDot = document.getElementById('notificationDot');
+
+    if (notificationBtn) {
+        notificationBtn.addEventListener('click', () => {
+            notificationModal.classList.add('active');
+            notificationModal.setAttribute('aria-hidden', 'false');
+            if (notificationDot) notificationDot.style.display = 'none';
+            // Don't hide overflow so it feels like a dropdown
+        });
+    }
+
+    if (closeNotificationBtn) {
+        closeNotificationBtn.addEventListener('click', () => {
+            notificationModal.classList.remove('active');
+            notificationModal.setAttribute('aria-hidden', 'true');
+        });
+    }
+
+    if (notificationModal) {
+        notificationModal.addEventListener('click', (e) => {
+            if (e.target === notificationModal) {
+                notificationModal.classList.remove('active');
+                notificationModal.setAttribute('aria-hidden', 'true');
             }
         });
     }
