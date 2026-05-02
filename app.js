@@ -130,8 +130,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Close on Escape key
     document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && taskModal.classList.contains('active')) {
-            closeModal();
+        if (e.key === 'Escape') {
+            if (taskModal.classList.contains('active')) {
+                closeModal();
+            }
+            if (inviteModal && inviteModal.classList.contains('active')) {
+                inviteModal.classList.remove('active');
+                inviteModal.setAttribute('aria-hidden', 'true');
+                document.body.style.overflow = '';
+            }
         }
     });
 
@@ -181,6 +188,51 @@ document.addEventListener('DOMContentLoaded', () => {
         updateTaskCounts();
         closeModal();
     });
+
+    // ---- Invite Modal Logic ----
+    const inviteTeamBtn = document.getElementById('inviteTeamBtn');
+    const inviteModal = document.getElementById('inviteModal');
+    const closeInviteModalBtn = document.getElementById('closeInviteModalBtn');
+    const copyInviteBtn = document.getElementById('copyInviteBtn');
+    const inviteLinkInput = document.getElementById('inviteLinkInput');
+
+    if (inviteTeamBtn) {
+        inviteTeamBtn.addEventListener('click', () => {
+            inviteModal.classList.add('active');
+            inviteModal.setAttribute('aria-hidden', 'false');
+            document.body.style.overflow = 'hidden';
+        });
+    }
+
+    if (closeInviteModalBtn) {
+        closeInviteModalBtn.addEventListener('click', () => {
+            inviteModal.classList.remove('active');
+            inviteModal.setAttribute('aria-hidden', 'true');
+            document.body.style.overflow = '';
+        });
+    }
+
+    if (copyInviteBtn) {
+        copyInviteBtn.addEventListener('click', () => {
+            inviteLinkInput.select();
+            document.execCommand('copy');
+            const originalText = copyInviteBtn.textContent;
+            copyInviteBtn.textContent = 'Copied!';
+            setTimeout(() => {
+                copyInviteBtn.textContent = originalText;
+            }, 2000);
+        });
+    }
+
+    if (inviteModal) {
+        inviteModal.addEventListener('click', (e) => {
+            if (e.target === inviteModal) {
+                inviteModal.classList.remove('active');
+                inviteModal.setAttribute('aria-hidden', 'true');
+                document.body.style.overflow = '';
+            }
+        });
+    }
 
     // Handle filter buttons visual states and filtering logic
     const filterAllBtn = document.getElementById('filter-all');

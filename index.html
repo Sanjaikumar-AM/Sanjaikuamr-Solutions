@@ -364,7 +364,7 @@
             <div class="view-section" id="view-team" style="display: none; padding: 2rem; overflow-y: auto;">
                 <div class="page-header">
                     <h2>Team Directory</h2>
-                    <button class="primary-btn"><i class="fa-solid fa-user-plus"></i> Invite</button>
+                    <button class="primary-btn" id="inviteTeamBtn"><i class="fa-solid fa-user-plus"></i> Invite</button>
                 </div>
                 <div class="team-grid">
                     <div class="team-card">
@@ -455,6 +455,46 @@
                     <button type="submit" class="primary-btn">Create Task</button>
                 </div>
             </form>
+        </div>
+    </div>
+
+    <!-- Modal for Invite Team -->
+    <div class="modal-overlay" id="inviteModal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="inviteModalTitle">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="inviteModalTitle">Invite Team Members</h2>
+                <button class="close-btn" id="closeInviteModalBtn" aria-label="Close modal">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div class="invite-body">
+                <p>Share this link with your team to grant them access to SyncSpace:</p>
+                <div class="invite-link-box">
+                    <input type="text" id="inviteLinkInput" value="https://syncspace.app/invite/abc-123" readonly>
+                    <button class="secondary-btn" id="copyInviteBtn">Copy</button>
+                </div>
+                
+                <div class="auth-divider"><span>OR SHARE VIA</span></div>
+                
+                <div class="share-options">
+                    <a href="https://api.whatsapp.com/send?text=Join%20my%20team%20on%20SyncSpace!%20Link:%20https://syncspace.app/invite/abc-123" target="_blank" class="share-btn bg-whatsapp">
+                        <i class="fa-brands fa-whatsapp"></i>
+                        WhatsApp
+                    </a>
+                    <a href="https://mail.google.com/mail/?view=cm&fs=1&su=Join%20my%20team%20on%20SyncSpace&body=Here%20is%20the%20invite%20link:%20https://syncspace.app/invite/abc-123" target="_blank" class="share-btn bg-gmail">
+                        <i class="fa-brands fa-google"></i>
+                        Gmail
+                    </a>
+                    <a href="https://outlook.office.com/mail/deeplink/compose?subject=Join%20my%20team%20on%20SyncSpace&body=Here%20is%20the%20invite%20link:%20https://syncspace.app/invite/abc-123" target="_blank" class="share-btn bg-outlook">
+                        <i class="fa-regular fa-envelope"></i>
+                        Outlook
+                    </a>
+                    <a href="msteams://teams.microsoft.com/l/chat/0/0?users=&message=Join%20my%20team%20on%20SyncSpace!%20Link:%20https://syncspace.app/invite/abc-123" target="_blank" class="share-btn bg-teams">
+                        <i class="fa-brands fa-microsoft"></i>
+                        Teams
+                    </a>
+                </div>
+            </div>
         </div>
     </div>
 

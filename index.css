@@ -1248,3 +1248,48 @@ body {
 .bg-teams { background-color: #6264A7; }
 .bg-outlook { background-color: #0078D4; }
 .bg-meet { background-color: #00897B; }
+
+/* ==== Invite Modal ==== */
+.invite-body p {
+    margin-bottom: 1rem;
+    color: var(--text-secondary);
+}
+
+.invite-link-box {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.invite-link-box input {
+    flex-grow: 1;
+    background-color: var(--bg-main);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-md);
+    padding: 0.75rem;
+    color: var(--text-primary);
+    font-size: 0.875rem;
+}
+
+.share-options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.share-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.75rem;
+    border-radius: var(--radius-md);
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+    transition: filter var(--transition-fast);
+}
+
+.share-btn:hover {
+    filter: brightness(1.1);
+}
