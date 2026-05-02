@@ -824,13 +824,30 @@ document.addEventListener('DOMContentLoaded', () => {
         aiMessages.scrollTop = aiMessages.scrollHeight;
     }
 
-    const aiResponses = [
-        "I've analyzed your current board. You have 2 tasks in 'To Do'. Should I prioritize them for you?",
-        "Sanjaikumar Solutions is performing optimally. Your team's average task completion time is 1.4 days.",
-        "I noticed 'Build Kanban Interface' has been in progress for 2 days. Would you like me to ping the assignee?",
-        "Based on your workflow, I suggest adding a 'Quality Assurance' step to your deployment pipeline.",
-        "I can help you generate a report for the 'Sanjaikumar Solutions' v1.0.0 release. Would you like to see a draft?"
-    ];
+    const aiKnowledge = {
+        "features": "Sanjaikumar Solutions offers a **Kanban Board** for tasks, **Automated Workflows** (Straight & Wave styles), **Cloud Storage** for files, a **Team Directory**, and this **AI Assistant**.",
+        "how to use": "You can drag and drop tasks on the Dashboard, run automation pipelines in the Workflows tab, and upload documents in the Storage section.",
+        "connect": "To connect apps like WhatsApp, Gmail, or MS Teams, go to the **Communication** view and click the 'Connect' button on the integration cards.",
+        "storage": "Our Cloud Storage feature allows you to manage team files with a real-time usage tracker and automated upload simulations.",
+        "workflow": "You can visualize your deployment pipeline in the Workflows section. Try toggling between 'Straight' and 'Waveform' styles for different views!",
+        "kanban": "The Kanban board is your main workspace. Drag tasks between To Do, In Progress, Review, and Done to keep your team synced.",
+        "who": "This is **Sanjaikumar Solutions**, a premium team collaboration platform designed for high-performance teams."
+    };
+
+    function getAiResponse(query) {
+        const q = query.toLowerCase();
+        
+        if (q.includes('feature') || q.includes('what can you do')) return aiKnowledge["features"];
+        if (q.includes('how to use') || q.includes('help')) return aiKnowledge["how to use"];
+        if (q.includes('connect') || q.includes('whatsapp') || q.includes('gmail') || q.includes('teams')) return aiKnowledge["connect"];
+        if (q.includes('storage') || q.includes('file')) return aiKnowledge["storage"];
+        if (q.includes('workflow') || q.includes('wave')) return aiKnowledge["workflow"];
+        if (q.includes('kanban') || q.includes('task')) return aiKnowledge["kanban"];
+        if (q.includes('who are you') || q.includes('about')) return aiKnowledge["who"];
+        
+        // Fallback for unknown queries
+        return `I'm not quite sure about that. Would you like to contact our lead developer? <br><br> <a href="mailto:warringwarriors@gmail.com?subject=Support Request - Sanjaikumar Solutions" style="color: white; background: var(--accent-primary); padding: 5px 10px; border-radius: 5px; text-decoration: none; font-weight: 600;">Email Support</a>`;
+    }
 
     function handleAiSend() {
         const text = aiInput.value.trim();
@@ -844,16 +861,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 typing.style.alignSelf = 'flex-start';
                 typing.style.color = 'var(--text-muted)';
                 typing.style.fontSize = '0.8rem';
-                typing.innerHTML = 'AI is thinking...';
+                typing.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> AI is searching...';
                 aiMessages.appendChild(typing);
                 aiMessages.scrollTop = aiMessages.scrollHeight;
                 
                 setTimeout(() => {
                     typing.remove();
-                    const randomResponse = aiResponses[Math.floor(Math.random() * aiResponses.length)];
-                    addAiMessage(randomResponse, true);
-                }, 1500);
-            }, 500);
+                    const response = getAiResponse(text);
+                    addAiMessage(response, true);
+                }, 1000);
+            }, 300);
         }
     }
 
