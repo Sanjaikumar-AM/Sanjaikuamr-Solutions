@@ -1293,3 +1293,7 @@ body {
 .share-btn:hover {
     filter: brightness(1.1);
 }
+
+.hidden {
+    display: none !important;
+}
