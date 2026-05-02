@@ -512,7 +512,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
         });
-        });
     });
 
     // ---- Communication & Integrations Logic ----

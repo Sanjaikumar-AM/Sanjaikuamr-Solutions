@@ -423,6 +423,23 @@
         </div>
     </div>
 
+    <!-- Task Detail Modal -->
+    <div class="modal-overlay" id="taskDetailModal" aria-hidden="true" role="dialog" aria-modal="true">
+        <div class="modal-content" style="max-width: 800px; width: 90%;">
+            <div class="modal-header">
+                <h2 id="detailModalTitle">Task Title</h2>
+                <button class="close-btn" id="closeDetailModalBtn" aria-label="Close modal">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div class="task-detail-labels" id="detailModalLabels" style="margin-bottom: 1rem; display: flex; gap: 0.5rem;"></div>
+            <p id="detailModalDesc" style="color: var(--text-secondary); margin-bottom: 2rem;"></p>
+            <div class="task-detail-body" id="detailModalBody">
+                <!-- Content injected via JS -->
+            </div>
+        </div>
+    </div>
+
     <script src="app.js"></script>
 </body>
 </html>
