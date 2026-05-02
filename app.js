@@ -8,15 +8,29 @@ document.addEventListener('DOMContentLoaded', () => {
     const loginForm = document.getElementById('loginForm');
     const authOverlay = document.getElementById('authOverlay');
     const oauthBtn = document.getElementById('oauthBtn');
+    const guestBtn = document.getElementById('guestBtn');
 
-    function handleLogin(e) {
+    function handleLogin(e, isGuest = false) {
         if(e) e.preventDefault();
+        
+        if (isGuest) {
+            // Update profile for guest
+            const userNameEl = document.querySelector('.user-name');
+            const userRoleEl = document.querySelector('.user-role');
+            const userAvatar = document.querySelector('.user-profile .avatar');
+            
+            if (userNameEl) userNameEl.textContent = 'Guest User';
+            if (userRoleEl) userRoleEl.textContent = 'Viewer';
+            if (userAvatar) userAvatar.src = 'https://ui-avatars.com/api/?name=Guest+User&background=random';
+        }
+        
         // Simulate auth
         authOverlay.classList.add('hidden');
     }
 
-    if (loginForm) loginForm.addEventListener('submit', handleLogin);
-    if (oauthBtn) oauthBtn.addEventListener('click', handleLogin);
+    if (loginForm) loginForm.addEventListener('submit', (e) => handleLogin(e, false));
+    if (oauthBtn) oauthBtn.addEventListener('click', (e) => handleLogin(e, false));
+    if (guestBtn) guestBtn.addEventListener('click', (e) => handleLogin(e, true));
 
     // ---- Elements ----
     const lists = document.querySelectorAll('.task-list');
