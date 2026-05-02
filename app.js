@@ -782,4 +782,86 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // ---- AI Assistant Logic ----
+    const aiToggleBtn = document.getElementById('aiToggleBtn');
+    const aiChatPanel = document.getElementById('aiChatPanel');
+    const closeAiBtn = document.getElementById('closeAiBtn');
+    const aiInput = document.getElementById('aiInput');
+    const sendAiBtn = document.getElementById('sendAiBtn');
+    const aiMessages = document.getElementById('aiMessages');
+
+    if (aiToggleBtn) {
+        aiToggleBtn.addEventListener('click', () => {
+            aiChatPanel.classList.toggle('hidden');
+            if (!aiChatPanel.classList.contains('hidden')) {
+                aiToggleBtn.style.transform = 'scale(0.8)';
+                aiInput.focus();
+            } else {
+                aiToggleBtn.style.transform = 'scale(1)';
+            }
+        });
+    }
+
+    if (closeAiBtn) {
+        closeAiBtn.addEventListener('click', () => {
+            aiChatPanel.classList.add('hidden');
+            aiToggleBtn.style.transform = 'scale(1)';
+        });
+    }
+
+    function addAiMessage(text, isAi = true) {
+        const msg = document.createElement('div');
+        msg.style.padding = '1rem';
+        msg.style.borderRadius = isAi ? '15px 15px 15px 0' : '15px 15px 0 15px';
+        msg.style.maxWidth = '85%';
+        msg.style.alignSelf = isAi ? 'flex-start' : 'flex-end';
+        msg.style.background = isAi ? 'var(--bg-tertiary)' : 'var(--accent-primary)';
+        msg.style.color = isAi ? 'var(--text-primary)' : 'white';
+        msg.style.fontSize = '0.9rem';
+        msg.style.boxShadow = '0 5px 15px rgba(0,0,0,0.1)';
+        msg.innerHTML = text;
+        aiMessages.appendChild(msg);
+        aiMessages.scrollTop = aiMessages.scrollHeight;
+    }
+
+    const aiResponses = [
+        "I've analyzed your current board. You have 2 tasks in 'To Do'. Should I prioritize them for you?",
+        "Sanjaikumar Solutions is performing optimally. Your team's average task completion time is 1.4 days.",
+        "I noticed 'Build Kanban Interface' has been in progress for 2 days. Would you like me to ping the assignee?",
+        "Based on your workflow, I suggest adding a 'Quality Assurance' step to your deployment pipeline.",
+        "I can help you generate a report for the 'Sanjaikumar Solutions' v1.0.0 release. Would you like to see a draft?"
+    ];
+
+    function handleAiSend() {
+        const text = aiInput.value.trim();
+        if (text) {
+            addAiMessage(text, false);
+            aiInput.value = '';
+            
+            // AI Thinking simulation
+            setTimeout(() => {
+                const typing = document.createElement('div');
+                typing.style.alignSelf = 'flex-start';
+                typing.style.color = 'var(--text-muted)';
+                typing.style.fontSize = '0.8rem';
+                typing.innerHTML = 'AI is thinking...';
+                aiMessages.appendChild(typing);
+                aiMessages.scrollTop = aiMessages.scrollHeight;
+                
+                setTimeout(() => {
+                    typing.remove();
+                    const randomResponse = aiResponses[Math.floor(Math.random() * aiResponses.length)];
+                    addAiMessage(randomResponse, true);
+                }, 1500);
+            }, 500);
+        }
+    }
+
+    if (sendAiBtn) sendAiBtn.addEventListener('click', handleAiSend);
+    if (aiInput) {
+        aiInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') handleAiSend();
+        });
+    }
+
 });
