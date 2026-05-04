@@ -364,7 +364,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const assigneesHTML = task.assignees.map(name => `<img src="https://ui-avatars.com/api/?name=${name.replace(' ','+')}&background=random" alt="${name}" class="avatar-small">`).join('');
 
             const taskHTML = `
-                <button class="delete-task-btn" data-id="${task.id}" style="position:absolute; top: 8px; right: 8px; background: none; border: none; color: var(--text-muted); cursor: pointer; padding: 4px; border-radius: 4px; z-index: 2;"><i class="fa-solid fa-trash" style="pointer-events: none;"></i></button>
                 <div class="task-labels">
                     <span class="label ${labelClass}">${labelText}</span>
                 </div>
@@ -398,20 +397,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (typeof applyFilter === 'function') applyFilter();
     }
 
-    // Event delegation for deleting tasks
-    const kanbanBoard = document.querySelector('.kanban-board');
-    if (kanbanBoard) {
-        kanbanBoard.addEventListener('click', (e) => {
-            if (e.target.closest('.delete-task-btn')) {
-                e.stopPropagation(); // prevent opening the modal
-                const btn = e.target.closest('.delete-task-btn');
-                const taskId = btn.getAttribute('data-id');
-                appTasks = appTasks.filter(t => t.id !== taskId);
-                saveTasks();
-                renderTasks();
-            }
-        });
-    }
+
 
     // ---- Create New Task ----
     newTaskForm.addEventListener('submit', (e) => {
